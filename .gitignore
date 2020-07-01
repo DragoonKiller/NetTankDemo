@@ -1,0 +1,12 @@
+*
+
+!.gitignore
+
+!Assets/
+!Assets/**/*
+
+!Packages/
+!Packages/**/*
+
+!.vscode/
+!.vscode/settings.json
