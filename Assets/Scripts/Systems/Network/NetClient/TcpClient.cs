@@ -98,6 +98,7 @@ namespace Systems
             {
                 if(buffer.receive.TryDequeue(out var dataBlock))
                 {
+                    // $"Client Receive {System.Text.Encoding.UTF8.GetString(dataBlock.data)}".Log();
                     curCnt += 1;
                     var protocol = dataBlock.data.Deserialize();
                     protocol.AfterReceiveByClient(this, remoteEndpoint);

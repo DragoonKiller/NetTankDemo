@@ -7,6 +7,10 @@ using Utils;
 [ExecuteAlways]
 public class CameraFollow : MonoBehaviour
 {
+    public static CameraFollow inst;
+    
+    CameraFollow() => inst = this;
+    
     [Tooltip("跟随目标.")]
     public GameObject target;
     
@@ -34,6 +38,9 @@ public class CameraFollow : MonoBehaviour
     [Tooltip("固定鼠标指针.")]
     public bool lockCursor;
     
+    [Tooltip("标志是否正在工作.")]
+    public bool working;
+    
     [Header("状态参数")]
     
     [Tooltip("当前跟随距离(世界坐标).")]
@@ -55,10 +62,8 @@ public class CameraFollow : MonoBehaviour
     
     void Update()
     {
+        if(!working) return;
         if(!updateInEditor && !Application.isPlaying) return;
-        
-        Debug.Assert(target);
-        
         SetDistance();
         SetYaw();
         SetPitch();

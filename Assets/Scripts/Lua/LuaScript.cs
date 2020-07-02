@@ -72,13 +72,6 @@ public class LuaScript : MonoBehaviour
             // 让脚本可以加载同一目录下的 lua 文件.
             scriptEnv.Set<string, Action<string>>("loadLua", LocalLoader);
             
-            // 执行脚本, 读入函数.
-            var ret = Lua.inst.DoString(File.ReadAllText(actualPath), $"{this.gameObject.name}:{luaFilePath}", scriptEnv);
-            scriptEnv.Get("onStart", out onStart);
-            scriptEnv.Get("onDestroy", out onDestroy);
-            scriptEnv.Get("onUpdate", out onUpdate);
-            scriptEnv.Get("onDrawGizmos", out onDrawGizmos);
-            
             // 添加引用对象.
             foreach(var i in references)
             {
@@ -93,6 +86,13 @@ public class LuaScript : MonoBehaviour
                     scriptEnv.Set(i.name, i.target);
                 }
             }
+            
+            // 执行脚本, 读入函数.
+            var ret = Lua.inst.DoString(File.ReadAllText(actualPath), $"{this.gameObject.name}:{luaFilePath}", scriptEnv);
+            scriptEnv.Get("onStart", out onStart);
+            scriptEnv.Get("onDestroy", out onDestroy);
+            scriptEnv.Get("onUpdate", out onUpdate);
+            scriptEnv.Get("onDrawGizmos", out onDrawGizmos);
             
             onStart?.Call();
         }

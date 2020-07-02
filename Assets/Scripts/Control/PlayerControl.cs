@@ -8,6 +8,13 @@ using System.Linq;
 
 public class PlayerControl : MonoBehaviour
 {
+    public static PlayerControl inst;
+    
+    PlayerControl() => inst = this;
+    
+    [Tooltip("组件是否正在工作.")]
+    public bool working;
+    
     [Tooltip("需要控制的炮塔.")]
     public TurretControl turret;
     
@@ -38,7 +45,6 @@ public class PlayerControl : MonoBehaviour
     class FireSTM : StateMachine
     {
         public PlayerControl player;
-        public LaunchControl[] launches;
         
         public override IEnumerable<Transfer> Step()
         {
@@ -47,14 +53,17 @@ public class PlayerControl : MonoBehaviour
             while(true)
             {
                 yield return Pass();
+                if(!player) continue;
                 if(!player.enabled) continue;
-                float cooldown = launches.Average(x => x.totalCooldown) / launches.Length;
+                if(!player.working) continue;
+                
+                float cooldown = player.launches.Average(x => x.totalCooldown) / player.launches.Length;
                 if(Input.GetKey(KeyCode.Mouse0) && t == 0)
                 {
-                    if(launches[cur].TryFire())
+                    if(player.launches[cur].TryFire())
                     {
                         t += cooldown;
-                        cur = (cur + 1).ModSys(launches.Length);
+                        cur = (cur + 1).ModSys(player.launches.Length);
                     }       
                 }
                 
@@ -65,11 +74,12 @@ public class PlayerControl : MonoBehaviour
     
     void Start()
     {
-        fireSTM = StateMachine.Register(new FireSTM(){ launches = launches, player = this });
+        fireSTM = StateMachine.Register(new FireSTM(){ player = this });
     }
     
     void Update()
     {
+        if(!working) return;
         ControlTank();
         ControlTurret();
         ControlReload();
@@ -99,10 +109,7 @@ public class PlayerControl : MonoBehaviour
         if(stayDir)
         {
             tank.turning = 0;
-            tank.forwarding =
-                stay ? 0
-                : forward ? 1
-                : -1;
+            tank.forwarding = stay ? 0 : forward ? 1 : -1;
         }
         else if(stay) // && !stayDir
         {

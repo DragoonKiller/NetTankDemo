@@ -11,16 +11,16 @@ namespace Utils
 {
     public static partial class Collections
     {
-        /// <summary>
-        /// 获取迭代器的第一个元素.
-        /// </summary>
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static T First<T>(this IEnumerable<T> x)
-        {
-            var i = x.GetEnumerator();
-            if(!i.MoveNext()) throw new ArgumentNullException();
-            return i.Current;
-        }
+        // /// <summary>
+        // /// 获取迭代器的第一个元素.
+        // /// </summary>
+        // [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        // public static T First<T>(this IEnumerable<T> x)
+        // {
+        //     var i = x.GetEnumerator();
+        //     if(!i.MoveNext()) throw new ArgumentNullException();
+        //     return i.Current;
+        // }
         
         /// <summary>
         /// 获取一个元素; 如果没有, 就使用默认值创建它.

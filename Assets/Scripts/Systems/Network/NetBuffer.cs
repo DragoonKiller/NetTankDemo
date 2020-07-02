@@ -93,6 +93,7 @@ namespace Systems
                             bool succeeded = false;
                             while(this.send.TryDequeue(out var dataBlock))
                             {
+                                // $"Send {System.Text.Encoding.UTF8.GetString(dataBlock.data.Slice(4, dataBlock.data.Length).ToArray())}".Log();
                                 int cnt = conn.Send(dataBlock.data);
                                 succeeded = true;
                             }

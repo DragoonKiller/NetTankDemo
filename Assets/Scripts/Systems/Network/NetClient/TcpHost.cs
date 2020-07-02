@@ -101,10 +101,10 @@ namespace Systems
         public override void Send<T>(T data)
         {
             var config = new HostSendConfig();
-            var bytes = data.SerializeToBytes();
             var endpointLists = new List<NetEndPoint>();
             foreach(var conn in connections) endpointLists.Add(conn.Key);
             data.BeforeSendByHost(this, endpointLists, ref config);
+            var bytes = data.SerializeToBytes();
             foreach(var conn in connections)
             {
                 var ip = conn.Key;

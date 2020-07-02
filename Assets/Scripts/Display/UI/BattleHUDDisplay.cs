@@ -6,11 +6,13 @@ using UnityEngine;
 /// </summary>
 public class BattleHUDDisplay : MonoBehaviour
 {
-    [Tooltip("战斗UI显示哪个单位的属性.")]
-    public PlayerControl player;
+    public static BattleHUDDisplay inst;
     
-    [Tooltip("控制哪个轨迹预测脚本.")]
-    public PredictionControl prediction;
+    BattleHUDDisplay() => inst = this;
+    
+    public PredictionControl prediction => unit.GetComponent<PredictionControl>();
+    
+    public PlayerControl player => PlayerControl.inst;
     
     public UnitControl unit => player.unit;
     

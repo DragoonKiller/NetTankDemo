@@ -16,13 +16,19 @@ namespace Utils
             return x;
         }
         
+        public static IEnumerable<Transform> Subtree(this Transform x)
+        {
+            yield return x;
+            foreach(var i in x.AllChildren(true)) yield return i;
+        }
+        
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static IEnumerable<Transform> AllChildren(this Transform x, bool recursive = false)
         {
             for(int i = 0; i < x.childCount; i++)
             {
                 yield return x.GetChild(i);
-                if(recursive) foreach(var j in x.GetChild(i).AllChildren()) yield return j;
+                if(recursive) foreach(var j in x.GetChild(i).AllChildren(true)) yield return j;
             }
         }
     }

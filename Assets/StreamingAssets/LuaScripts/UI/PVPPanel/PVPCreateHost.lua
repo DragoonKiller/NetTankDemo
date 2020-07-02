@@ -3,7 +3,8 @@ loadLua('../UIUtils')
 button = this:GetComponent(typeof(UnityUI.Button))
 
 onClick = function()
-    loadSceneWithEnv('PVP')
+    loadSceneWithEnv('PVP', function() 
+    end)
 end
 
 onStart = function()

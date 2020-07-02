@@ -2,9 +2,12 @@ using System;
 using Utils;
 using UnityEngine;
 
-[RequireComponent(typeof(CameraFollow))]
 public class CameraZoom : MonoBehaviour
 {
+    public static CameraZoom inst;
+    
+    CameraZoom() => inst = this;
+    
     [Tooltip("放大后的视角乘数.")]
     public float fieldOfViewMult;
     
@@ -25,7 +28,7 @@ public class CameraZoom : MonoBehaviour
     [Tooltip("初始灵敏度.")]
     [SerializeField] float baseSensitivity;
     
-    CameraFollow follow => this.GetComponent<CameraFollow>();
+    CameraFollow follow => CameraFollow.inst;
     
     void Start()
     {
@@ -35,6 +38,8 @@ public class CameraZoom : MonoBehaviour
     
     void Update()
     {
+        if(!follow.working) return;
+        
         if(Input.GetKey(KeyCode.Mouse1))
         {
             zoomCrosshair.SetActive(true);

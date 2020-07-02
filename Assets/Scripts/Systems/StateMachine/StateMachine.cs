@@ -271,7 +271,18 @@ namespace Systems
                 }
                 
                 // x 是第一次开始执行.
-                if(x.curState == null) x.curState = x.Step().GetEnumerator();
+                if(x.curState == null)
+                {
+                    try
+                    {
+                        x.curState = x.Step().GetEnumerator();
+                    }
+                    catch(Exception e)
+                    {
+                        UnityEngine.Debug.LogError(e.Message);
+                        continue;
+                    }
+                }
                 
                 // curState 总是引用类型.
                 var curState = x.curState;

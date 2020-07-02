@@ -5,11 +5,11 @@ loadSceneWithEnv = function (sceneName, callback)
         local unloadTask = SceneManager.UnloadSceneAsync('Open')
         unloadTask:completed('+', function (_)
             local loadTaskB = SceneManager.LoadSceneAsync(sceneName, Scene.LoadSceneMode.Additive)
-            loadTaskB:completed('+', function (_) 
+            loadTaskB:completed('+', function (_)
                 if callback ~= nil then
+                    SceneManager.SetActiveScene(SceneManager.GetSceneByName(sceneName))
                     callback()
                 end
-                loadTaskA.allowSceneActivation = true
             end)
         end)
     end)

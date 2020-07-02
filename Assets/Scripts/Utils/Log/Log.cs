@@ -12,7 +12,11 @@ namespace Utils
         
         public static void Log(this string s)
         {
+            #if UNITY_EDITOR
             Debug.Log(s);
+            #else
+            Debug.LogError(s);
+            #endif
             
         }
     }

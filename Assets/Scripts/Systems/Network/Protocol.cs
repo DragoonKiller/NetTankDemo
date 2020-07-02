@@ -32,7 +32,7 @@ namespace Systems
         
         public static string SerializeToString(this Protocol x) => x.GetType().Name + typeTag + JsonUtility.ToJson(x);
         
-        public static byte[] SerializeToBytes(this Protocol x) => Encoding.UTF8.GetBytes(x.GetType().Name + typeTag + JsonUtility.ToJson(x));
+        public static byte[] SerializeToBytes(this Protocol x) => Encoding.UTF8.GetBytes(x.SerializeToString());
         
         public static Protocol Deserialize(this byte[] data)
         {

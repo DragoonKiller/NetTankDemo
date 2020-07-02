@@ -6,7 +6,12 @@ using UnityEngine;
 /// </summary>
 public class RevivePointControl : MonoBehaviour
 {
+    public static RevivePointControl inst;
+    
+    public RevivePointControl() => inst = this;
+    
     public Transform[] revivePoints;
+    
     public int used;
     
     
