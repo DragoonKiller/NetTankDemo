@@ -67,6 +67,5 @@ PrefabInstance:
       propertyPath: m_Name
       value: NetTankA
       objectReference: {fileID: 0}
-    m_RemovedComponents:
-    - {fileID: 4825123593254900720, guid: d9daec4ef2e7ce344881f563a9606633, type: 3}
+    m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: d9daec4ef2e7ce344881f563a9606633, type: 3}

@@ -317,7 +317,6 @@ namespace Systems
 
                         case Transfer.Type.Call:
                         {
-                            // Call 操作
                             // 将 x 拿出队列, 将 x 的引用存入next.
                             // 将 next 放入当前队列.
                             var next = trans.next;
@@ -328,10 +327,19 @@ namespace Systems
 
                         case Transfer.Type.CallPass:
                         {
-                            // CallPass 操作
                             // 将新的状态机作为子状态机连接进入原状态机.
                             var next = trans.next;
+                            
+                            // 当父状态机被移除时, 子状态机也要被移除.
                             x.cancelCallback += () => StateMachine.Remove(next.tag);
+                            
+                            // 子状态机的中断条件是父子状态机的中断条件的或.
+                            Func<bool> interruptor = null;
+                            if(next.interrupt != null && x.interrupt != null) interruptor = () => next.interrupt() || x.interrupt();
+                            else if(x.interrupt != null) interruptor = x.interrupt;
+                            else if(next.interrupt != null) interruptor = next.interrupt;
+                            next.interrupt = interruptor;
+                            
                             cur.Enqueue(next);
                             cur.Enqueue(x);
                             break;
@@ -339,7 +347,6 @@ namespace Systems
 
                         case Transfer.Type.Transfer:
                         {
-                            // Transfer 操作
                             // 将 x 从队列移除.
                             // 将 next 放到当前队列执行.
                             var next = trans.next;

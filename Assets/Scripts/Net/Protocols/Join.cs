@@ -22,10 +22,12 @@ public class JoinProtocol : Protocol
         public NetEndPoint endpoint;
         public int id;
         public int faction;
-        public Vector3 revivePoint;
         public Vector3 pos;
         public Quaternion rot;
+        public string name;
     }
+    
+    public string newPlayerName;
     
     public List<PlayerEntry> players = new List<PlayerEntry>();
     
@@ -42,12 +44,12 @@ public class JoinProtocol : Protocol
                 Debug.Assert(f.endpoint == p.endpoint);
                 Debug.Assert(f.id == p.id);
                 Debug.Assert(f.faction == p.faction);
-                Debug.Assert(f.revivePoint == p.revivePoint);
                 continue;
             }
             
             // 创建玩家坦克.
-            var x = PVPData.inst.CreatePlayer(p.endpoint, p.faction, p.id, p.pos, p.rot, p.revivePoint);
+            var x = PVPData.inst.CreatePlayer(p.endpoint, p.faction, p.id, p.pos, p.rot);
+            x.unit.gameObject.name = p.name;
             
             // 创建的是自己的坦克, 绑控制到上面.
             if(p.endpoint == client.localEndpoint)
@@ -59,15 +61,16 @@ public class JoinProtocol : Protocol
 
     public override void AfterReceiveByHost(NetClient host, NetEndPoint from)
     {
-        // $"Host Receive!".Log();
-        PVPData.inst.CreatePlayer(from);
+        // $"Host Receive!".Log();x
+        var player = PVPData.inst.CreatePlayer(from);
+        player.unit.gameObject.name = newPlayerName;
         foreach(var p in PVPData.players) players.Add(new PlayerEntry() { 
             endpoint = p.endpoint,
             id = p.id,
             faction = p.faction,
-            revivePoint = p.revivePoint,
             pos = p.unit.transform.position,
-            rot = p.unit.transform.rotation
+            rot = p.unit.transform.rotation,
+            name = p.unit.gameObject.name
         });
         host.Send(this);
     }
@@ -75,6 +78,7 @@ public class JoinProtocol : Protocol
     public override void BeforeSendByClient(NetClient client, ref ClientSendConfig cfg)
     {
         // $"Client Send!".Log();
+        newPlayerName = PVPEnv.inst.playerName;
     }
 
     public override void BeforeSendByHost(NetClient host, List<NetEndPoint> endpointList, ref HostSendConfig cfg)

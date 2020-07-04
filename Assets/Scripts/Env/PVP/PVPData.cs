@@ -29,11 +29,6 @@ public class PVPPlayerEntry
     [ReadOnly] public int faction;
     
     /// <summary>
-    /// 该玩家的复活点.
-    /// </summary>
-    [ReadOnly] public Vector3 revivePoint;
-    
-    /// <summary>
     /// 该玩家控制的单位.
     /// </summary>
     [ReadOnly] public UnitControl unit;
@@ -54,7 +49,7 @@ public class PVPData : MonoBehaviour
     PVPData() => inst = this;
     
     [Tooltip("玩家坦克模板. 用于创建玩家坦克.")]
-    public GameObject tankTemplate;
+    public GameObject[] tankTemplate;
     
     [Header("状态参数")]
     
@@ -82,28 +77,66 @@ public class PVPData : MonoBehaviour
     /// </summary>
     public PVPPlayerEntry CreatePlayer(NetEndPoint endPoint)
     {
-        var pos = RevivePointControl.inst.Take().Value;
+        HostOnly();
+        var faction = playerCount % 2 + 1;
+        var pos = RevivePointControl.inst.Take(faction).Value;
         var rot = Quaternion.identity;
-        return CreatePlayer(endPoint, playerCount % 2 + 1, playerCount + 1, pos, rot, pos);
+        return CreatePlayer(endPoint, faction, playerCount + 1, pos, rot);
     }
     
     /// <summary>
     /// 按照给定数据新建一个玩家.
     /// </summary>
-    public PVPPlayerEntry CreatePlayer(NetEndPoint netEndPoint, int faction, int id, Vector3 curPos, Quaternion curRot, Vector3 revivePoint)
+    public PVPPlayerEntry CreatePlayer(NetEndPoint netEndPoint, int faction, int id, Vector3 pos, Quaternion rot)
     {
-        var g = GameObject.Instantiate(tankTemplate, curPos, curRot);
-        var c = g.GetComponent<UnitControl>();
-        c.factionId = faction;
-        var x = new PVPPlayerEntry() {
-            endpoint = netEndPoint,
-            id = id,
-            faction = faction,
-            revivePoint = revivePoint,
-            unit = c
-        };
-        playerData.Add(x);
-        return x;
+        var c = CreateTank(pos, rot, faction);
+        return CreatePlayerEntry(netEndPoint, faction, id, c);
+    }
+    
+    /// <summary>
+    /// 报告一个玩家坦克已经爆了.
+    /// </summary>
+    public PVPPlayerEntry PlayerDeath(int id)
+    {
+        var player = players[id];
+     
+        // 设置 UI.
+        Signal.Emit(new Signals.KillCount() { faction = player.faction });
+        
+        // 强制设定血量为 0.
+        PVPData.players[id].unit.currentStrength = 0;
+        
+        // 可以进行死亡响应了.
+        player.unit.GetComponent<UnitDestroyControl>().enabled = true;
+        
+        player.unit = null;
+        
+        // 玩家原来的坦克不会被删除.
+        return player;
+    }
+    
+    /// <summary>
+    /// 复活一个玩家.
+    /// </summary>
+    public PVPPlayerEntry PlayerRevive(int id, Vector3 pos)
+    {
+        var player = players[id];
+        player.unit = CreateTank(pos, Quaternion.identity, player.faction);
+        
+        // 如果是自己控制的坦克, 绑定控制到上面.
+        if(players.me == player) PVPData.inst.SetPlaying(player);
+        
+        return player;
+    }
+    
+    /// <summary>
+    /// 删除玩家.
+    /// </summary>
+    public void RemovePlayer(int id)
+    {
+        var player = players[id];
+        GameObject.Destroy(player.unit.gameObject);
+        playerData.RemoveAll(x => x.id == id);
     }
     
     /// <summary>
@@ -116,13 +149,6 @@ public class PVPData : MonoBehaviour
         // 绑定自己的控制模块.
         var control = PlayerControl.inst;
         var launches = new List<LaunchControl>();
-        foreach(var x in data.unit.transform.Subtree())
-        {
-            if(x.TryGetComponent<TurretControl>(out var turret)) control.turret = turret;
-            if(x.TryGetComponent<TankControl>(out var tank)) control.tank = tank;
-            if(x.TryGetComponent<LaunchControl>(out var launcher)) launches.Add(launcher);
-        }
-        control.launches = launches.ToArray();
         control.unit = data.unit;
         control.working = true;
         
@@ -142,6 +168,35 @@ public class PVPData : MonoBehaviour
         
         return data;
     }
+    
+    
+    PVPPlayerEntry CreatePlayerEntry(NetEndPoint endpoint, int faction, int id, UnitControl control)
+    {
+        var x = new PVPPlayerEntry() {
+            endpoint = endpoint,
+            id = id,
+            faction = faction,
+            unit = control
+        };
+        playerData.Add(x);
+        return x;
+    }
+    
+    /// <summary>
+    /// 创建一个坦克.
+    /// </summary>
+    UnitControl CreateTank(Vector3 pos, Quaternion rot, int faction)
+    {
+        var g = GameObject.Instantiate(tankTemplate[faction - 1], pos, rot);
+        var c = g.GetComponent<UnitControl>();
+        c.factionId = faction;
+        return c;
+    }
+    
+    /// <summary>
+    /// 在函数最前面调用, 保证仅被主机调用.
+    /// </summary>
+    void HostOnly() => Debug.Assert(PVPEnv.inst.isHost);
 
     public struct PlayerIndexer : IReadOnlyList<PVPPlayerEntry>
     {
@@ -152,6 +207,8 @@ public class PVPData : MonoBehaviour
         public PVPPlayerEntry this[int index] => data.playerData.FirstOrDefault(x => x.id == index);
         
         public int Count => data.playerCount;
+        
+        public PVPPlayerEntry Find(UnitControl unit) => data.playerData.FirstOrDefault(x => x.unit == unit);
 
         public IEnumerator<PVPPlayerEntry> GetEnumerator() => data.playerData.GetEnumerator();
 

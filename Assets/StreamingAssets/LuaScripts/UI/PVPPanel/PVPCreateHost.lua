@@ -3,7 +3,10 @@ loadLua('../UIUtils')
 button = this:GetComponent(typeof(UnityUI.Button))
 
 onClick = function()
-    loadSceneWithEnv('PVP', function() 
+    local name = nameInput.text
+    loadSceneWithEnv('PVP', function()
+        local pvpEnv = CS.PVPEnv.inst
+        pvpEnv.playerName = name
     end)
 end
 

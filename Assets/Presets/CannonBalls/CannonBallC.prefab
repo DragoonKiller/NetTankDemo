@@ -1,6 +1,6 @@
 %YAML 1.1
 %TAG !u! tag:unity3d.com,2011:
---- !u!1001 &144221209465393356
+--- !u!1001 &8859464174230503259
 PrefabInstance:
   m_ObjectHideFlags: 0
   serializedVersion: 2
@@ -10,17 +10,17 @@ PrefabInstance:
     - target: {fileID: 5518446745385983282, guid: 464377e18faf1f14584bf3f880978136,
         type: 3}
       propertyPath: bias
-      value: 1
-      objectReference: {fileID: 0}
-    - target: {fileID: 5518446745385983282, guid: 464377e18faf1f14584bf3f880978136,
-        type: 3}
-      propertyPath: speed
-      value: 140
+      value: 0.4
       objectReference: {fileID: 0}
     - target: {fileID: 5518446745385983282, guid: 464377e18faf1f14584bf3f880978136,
         type: 3}
       propertyPath: damage
-      value: 40
+      value: 100
+      objectReference: {fileID: 0}
+    - target: {fileID: 5518446745385983282, guid: 464377e18faf1f14584bf3f880978136,
+        type: 3}
+      propertyPath: speed
+      value: 240
       objectReference: {fileID: 0}
     - target: {fileID: 5518446745385983285, guid: 464377e18faf1f14584bf3f880978136,
         type: 3}
@@ -80,7 +80,7 @@ PrefabInstance:
     - target: {fileID: 5518446745385983287, guid: 464377e18faf1f14584bf3f880978136,
         type: 3}
       propertyPath: m_Name
-      value: CannonballB
+      value: CannonBallC
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 464377e18faf1f14584bf3f880978136, type: 3}

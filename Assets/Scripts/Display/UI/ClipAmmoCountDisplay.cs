@@ -37,8 +37,7 @@ public class ClipAmmoCountDisplay : MonoBehaviour
     [Tooltip("弹药条颜色.")]
     public Color clipColor;
     
-    [Tooltip("弹药条显示基础百分比.")]
-    public float clipMult;
+    public float clipMult => 1f / player.launches.Length;
     
     void Update()
     {
@@ -62,6 +61,18 @@ public class ClipAmmoCountDisplay : MonoBehaviour
                 image.color = clipColor;
                 image.fillAmount = clipMult * launcher.clipAmmo / launcher.clipMaxAmmo;
             }
+            
+            ammoTexts[i].gameObject.SetActive(true);
+            maxAmmoTexts[i].gameObject.SetActive(true);
+            images[i].gameObject.SetActive(true);
+        }
+        
+        // 屏蔽掉多余的文本.
+        for(int i = player.launches.Length; i < ammoTexts.Length; i++)
+        {
+            ammoTexts[i].gameObject.SetActive(false);
+            maxAmmoTexts[i].gameObject.SetActive(false);
+            images[i].gameObject.SetActive(false);
         }
         
         reloadingText.enabled = reloading;

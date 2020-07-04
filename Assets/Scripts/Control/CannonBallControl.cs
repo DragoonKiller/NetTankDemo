@@ -39,20 +39,18 @@ public class CannonBallControl : MonoBehaviour
     /// <summary>
     /// 基础偏差方向.
     /// </summary>
-    Vector2 biasVec;
+    Vector2 biasVec = Vector2.zero;
     
     /// <summary>
     /// 偏差方向随时间的转向角度.
     /// </summary>
-    float biasDir;
+    float biasDir = 0;
     
     Rigidbody rd => this.GetComponent<Rigidbody>();
     
     void Start()
     {
         rd.velocity = this.transform.forward * speed + appendVelocity;
-        biasVec = Vector2.right.Rot((0f, 360f).Random().ToRad());
-        biasDir = (-Mathf.PI, Mathf.PI).Random();
     }
     
     void Update()

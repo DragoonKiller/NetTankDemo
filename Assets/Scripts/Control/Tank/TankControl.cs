@@ -3,6 +3,10 @@ using System.Collections.Generic;
 using UnityEngine;
 using Utils;
 
+/// <summary>
+/// 控制坦克的移动.
+/// </summary>
+[RequireComponent(typeof(UnitControl))]
 [RequireComponent(typeof(Rigidbody))]
 public class TankControl : MonoBehaviour
 {

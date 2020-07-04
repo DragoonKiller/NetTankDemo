@@ -70,7 +70,7 @@ public class UnitControl : MonoBehaviour
     public float currentStrength
     {
         get => _currentStrength;
-        private set => _currentStrength = value.Clamp(invincible ? _currentStrength : 0, maxStrength);
+        set => _currentStrength = value.Clamp(invincible ? _currentStrength : 0, maxStrength);
     }
     
     void Update()

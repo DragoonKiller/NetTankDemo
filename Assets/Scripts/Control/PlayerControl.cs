@@ -15,15 +15,6 @@ public class PlayerControl : MonoBehaviour
     [Tooltip("组件是否正在工作.")]
     public bool working;
     
-    [Tooltip("需要控制的炮塔.")]
-    public TurretControl turret;
-    
-    [Tooltip("需要控制的坦克.")]
-    public TankControl tank;
-    
-    [Tooltip("需要控制的开火点.")]
-    public LaunchControl[] launches;
-    
     [Tooltip("需要控制的单位.")]
     public UnitControl unit;
     
@@ -35,6 +26,14 @@ public class PlayerControl : MonoBehaviour
     
     [Tooltip("瞄准线会被什么物体击中.")]
     public LayerMask aimingMask;
+    
+    public TurretControl turret => unit.GetComponent<TurretControl>();
+    
+    public TankControl tank => unit.GetComponent<TankControl>();
+    
+    public LaunchGroupControl launchGroup => unit.GetComponent<LaunchGroupControl>();
+
+    public LaunchControl[] launches => launchGroup.launches;
     
     /// 用于实现轮流开火的状态机.
     FireSTM fireSTM;
@@ -48,7 +47,7 @@ public class PlayerControl : MonoBehaviour
         
         public override IEnumerable<Transfer> Step()
         {
-            int cur = 1;
+            int cur = 0;
             float t = 0;
             while(true)
             {
@@ -64,7 +63,7 @@ public class PlayerControl : MonoBehaviour
                     {
                         t += cooldown;
                         cur = (cur + 1).ModSys(player.launches.Length);
-                    }       
+                    }
                 }
                 
                 t = (t - Time.deltaTime).Max(0);
@@ -172,20 +171,7 @@ public class PlayerControl : MonoBehaviour
     {
         if(turret == null) return;
         
-        // 见 https://forum.unity.com/threads/detect-resolution-selected-in-editor-game-view.299814/
-        // 以及 https://answers.unity.com/questions/179775/game-window-size-from-editor-window-in-editor-mode.html
-        #if UNITY_EDITOR
-        var curResolution = Resolution.GetMainGameViewSize();
-        #else
-        var curResolution = new Vector2(Screen.currentResolution.width, Screen.currentResolution.height);
-        #endif
-        
-        var ray = Camera.main.ScreenPointToRay(
-            new Vector2(
-                curResolution.x * cursorPos.x, 
-                curResolution.y * cursorPos.y
-            )
-        );
+        var ray = Camera.main.ViewportPointToRay(cursorPos);
         
         if(Physics.Raycast(ray, out var hit, maxDistance, aimingMask))
         {

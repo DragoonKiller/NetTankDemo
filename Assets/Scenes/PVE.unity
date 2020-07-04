@@ -150,11 +150,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: cd3f0f66bac9d6c478bd5d5b524be271, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  turret: {fileID: 1000011952934619}
-  tank: {fileID: 1000011516072661}
-  launches:
-  - {fileID: 1044601936}
-  - {fileID: 133436388}
+  working: 1
   unit: {fileID: 1024783112}
   cursorPos: {x: 0.5, y: 0.5}
   maxDistance: 1000
@@ -840,18 +836,6 @@ MonoBehaviour:
   mask:
     serializedVersion: 2
     m_Bits: 1048576
---- !u!114 &133436388 stripped
-MonoBehaviour:
-  m_CorrespondingSourceObject: {fileID: 4718859825803448386, guid: d9daec4ef2e7ce344881f563a9606633,
-    type: 3}
-  m_PrefabInstance: {fileID: 4718859826847231039}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 0}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: ed07983ea52d1aa4f8cde00897e505ba, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
 --- !u!1 &134630968
 GameObject:
   m_ObjectHideFlags: 0
@@ -6983,6 +6967,7 @@ MonoBehaviour:
   scrollSensitivity: 1
   upOffset: 0.6
   lockCursor: 0
+  working: 1
   curDistance: 11.59
   curYaw: 199.34
   curPitch: -30
@@ -7374,18 +7359,6 @@ MonoBehaviour:
   mask:
     serializedVersion: 2
     m_Bits: 1048576
---- !u!114 &1044601936 stripped
-MonoBehaviour:
-  m_CorrespondingSourceObject: {fileID: 4718859826317748478, guid: d9daec4ef2e7ce344881f563a9606633,
-    type: 3}
-  m_PrefabInstance: {fileID: 4718859826847231039}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 0}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: ed07983ea52d1aa4f8cde00897e505ba, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
 --- !u!1 &1060821251
 GameObject:
   m_ObjectHideFlags: 0
@@ -14483,30 +14456,6 @@ MonoBehaviour:
   mask:
     serializedVersion: 2
     m_Bits: 1048576
---- !u!114 &1000011516072661 stripped
-MonoBehaviour:
-  m_CorrespondingSourceObject: {fileID: 4719578361238191850, guid: d9daec4ef2e7ce344881f563a9606633,
-    type: 3}
-  m_PrefabInstance: {fileID: 4718859826847231039}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 0}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: f4e02987e85f4504babd67b6b8d9f104, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
---- !u!114 &1000011952934619 stripped
-MonoBehaviour:
-  m_CorrespondingSourceObject: {fileID: 4719578361271083748, guid: d9daec4ef2e7ce344881f563a9606633,
-    type: 3}
-  m_PrefabInstance: {fileID: 4718859826847231039}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 0}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: b46c70c679067e445b26f5a4541fc741, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
 --- !u!1001 &4718859826847231039
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -14573,21 +14522,6 @@ PrefabInstance:
         type: 3}
       propertyPath: m_Name
       value: PlayerTank
-      objectReference: {fileID: 0}
-    - target: {fileID: 4719578361731818261, guid: d9daec4ef2e7ce344881f563a9606633,
-        type: 3}
-      propertyPath: rollingSpeed
-      value: -0.256
-      objectReference: {fileID: 0}
-    - target: {fileID: 7577010086057240279, guid: d9daec4ef2e7ce344881f563a9606633,
-        type: 3}
-      propertyPath: m_PlayOnAwake
-      value: 1
-      objectReference: {fileID: 0}
-    - target: {fileID: 8380086799061649096, guid: d9daec4ef2e7ce344881f563a9606633,
-        type: 3}
-      propertyPath: m_PlayOnAwake
-      value: 1
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: d9daec4ef2e7ce344881f563a9606633, type: 3}

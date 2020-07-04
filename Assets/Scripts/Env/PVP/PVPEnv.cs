@@ -24,6 +24,9 @@ public class PVPEnv : Env
     [Tooltip("想要连接到的主机的端口. 如果想要创建主机, 将该字段放空.")]
     public int targetPort;
     
+    [Tooltip("玩家名称.")]
+    public string playerName;
+    
     [Tooltip("显示ip和端口号的文本框.")]
     public Text endpointDisplay;
     
@@ -40,8 +43,6 @@ public class PVPEnv : Env
     void Start()
     {
         if(!Application.isEditor) Debug.LogError("Open Console!");
-        Signal<Signals.Launch>.Listen(LaunchControl.LaunchCallback);
-        Signal<Signals.Hit>.Listen(UnitControl.HitCallback);
         setupStm = StateMachine.Register(new SetupStateMachine() { env = this });
         netDataProceedStm = StateMachine.Register(new NetDataProceedStateMachine() { env = this });
     }
@@ -52,13 +53,12 @@ public class PVPEnv : Env
         StateMachine.Run();
         
         SetCursorLocked();
+        CutoffConnection();
     }
     
     
     void OnDestroy()
     {
-        Signal<Signals.Launch>.Remove(LaunchControl.LaunchCallback);
-        Signal<Signals.Hit>.Remove(UnitControl.HitCallback);
         StateMachine.Remove(setupStm.tag);
         StateMachine.Remove(netDataProceedStm.tag);
     }
@@ -72,6 +72,20 @@ public class PVPEnv : Env
         if(Input.GetKeyDown(KeyCode.V)) ExCursor.cursorLocked = !ExCursor.cursorLocked;
         #endif
     }
+    
+    /// <summary>
+    /// 给予客户端一个主动断开连接的方式.
+    /// </summary>
+    void CutoffConnection()
+    {
+        if(Input.GetKeyDown(KeyCode.Delete))
+        {
+            client.Dispose();
+            $"Force client offline!".Log();
+        }
+    }
+    
+    
     class NetDataProceedStateMachine : StateMachine
     {
         public PVPEnv env;
@@ -99,12 +113,19 @@ public class PVPEnv : Env
         }
         
         IEnumerable<Transfer> SetupHost()
-        {    
-            env.client = new TcpHost();
-            while(!env.client.isSetup) yield return Pass();
-            env.endpointDisplay.text = $"主机 {env.client.localEndpoint}";
-            var x = PVPData.inst.CreatePlayer(env.client.localEndpoint);
+        {
+            var client = new TcpHost();
+            env.client = client;
+            while(!client.isSetup) yield return Pass();
+            env.endpointDisplay.text = $"主机 {client.localEndpoint}".WithColor(Color.yellow);
+            var x = PVPData.inst.CreatePlayer(client.localEndpoint);
+            x.unit.gameObject.name = env.playerName;
             PVPData.inst.SetPlaying(x);
+            while(true)
+            {
+                yield return Pass();
+                SyncRemovePlayerEntry(client);
+            }
         }
         
         IEnumerable<Transfer> SetupClient()
@@ -114,6 +135,26 @@ public class PVPEnv : Env
             env.endpointDisplay.text = $"连接到 {env.client.remoteEndpoint}";
             env.client.Send(new JoinProtocol());
         }
+        
+        /// <summary>
+        /// 定期检查并清除掉线的玩家.
+        /// </summary>
+        void SyncRemovePlayerEntry(TcpHost client)
+        {
+            var players = PVPData.players;
+            List<int> removeList = null;
+            foreach(var p in players)
+            {
+                bool valid = p.id == PVPData.inst.id;
+                foreach(var c in client.connections.Keys) valid |= c == p.endpoint;
+                if(valid) continue;
+                if(removeList == null) removeList = new List<int>();
+                removeList.Add(p.id);
+                $"Player Exit {p.id}".Log();
+            }
+            if(removeList != null) foreach(var rm in removeList) PVPData.inst.RemovePlayer(rm);
+        }
+    
     }
     
     

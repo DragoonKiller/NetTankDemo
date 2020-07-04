@@ -8,7 +8,7 @@ using Utils;
 /// 代表一个玩家操作的数据包.
 /// </summary>
 [Serializable]
-public class PlayerOP : Protocol
+public class PlayerOPProtocol : Protocol
 {
     public int id;
     public float forwarding;
@@ -42,7 +42,9 @@ public class PlayerOP : Protocol
     void RetriveData(PVPPlayerEntry player)
     {
         var data = PVPData.players.me;
+        if(data == null) return;            // 自己并没有控制某个单位.
         var unit = data.unit;
+        if(unit == null) return;            // 处于复活阶段.
         var tank = unit.GetComponent<TankControl>();
         var turret = unit.GetComponentInChildren<TurretControl>();
         var body = tank.GetComponent<Rigidbody>();
@@ -60,9 +62,10 @@ public class PlayerOP : Protocol
     void SetData()
     {
         var data = PVPData.players[id];
-        if(data == null) return;            // 已经拿到了同步信号, 但是这个对象还没创建.
-        if(id == PVPData.inst.id) return;   // 不控制自己.
+        if(data == null) return;            // 已经拿到了同步信号, 但是这个对象还没创建, 或者已经取消控制.
+        if(id == PVPData.inst.id) return;   // 不通过网络控制自己.
         var unit = data.unit;
+        if(unit == null) return;            // 处于复活阶段.
         var tank = unit.GetComponent<TankControl>();
         var turret = unit.GetComponentInChildren<TurretControl>();
         var body = tank.GetComponent<Rigidbody>();

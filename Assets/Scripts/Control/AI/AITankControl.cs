@@ -12,20 +12,11 @@ using UnityEngine.AI;
 /// </summary>
 public class AITankControl : MonoBehaviour
 {
-    [Tooltip("需要控制的坦克.")]
-    public TankControl tank;
-    
-    [Tooltip("需要控制的炮台.")]
-    public TurretControl turret;
-    
     [Tooltip("需要控制的单位.")]
     public UnitControl unit;
     
     [Tooltip("索敌组件.")]
     public AISearchEnemyControl searcher;
-    
-    [Tooltip("需要控制的发射器.")]
-    public LaunchControl[] launches;
     
     [Tooltip("逃跑路点.")]
     public AIEscapeControl escapeSearcher;
@@ -82,6 +73,12 @@ public class AITankControl : MonoBehaviour
     /// 指示生命值是否过低.
     /// </summary>
     bool strengthTooLow => unit.currentStrength < unit.maxStrength * strengthLowRate;
+    
+    public TankControl tank => unit.GetComponent<TankControl>();
+    
+    public TurretControl turret => unit.GetComponent<TurretControl>();
+    
+    public LaunchControl[] launches => unit.GetComponent<LaunchGroupControl>().launches;
     
     /// <summary>
     /// AI状态机.

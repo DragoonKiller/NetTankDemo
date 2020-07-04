@@ -55,10 +55,10 @@ public class UnitDestroyControl : MonoBehaviour
     {
         callback.Invoke();
         unitCallback?.Invoke(target);
-        foreach(var i in generates) GameObject.Instantiate(i, target.transform, false);
-        foreach(var i in generatesWorld) GameObject.Instantiate(i, this.transform.position, this.transform.rotation);
-        foreach(var i in removeObjects) GameObject.Destroy(i);
-        foreach(var i in disableComponents) i.enabled = false;
-        foreach(var i in removeComponents) Destroy(i);
+        if(generates != null) foreach(var i in generates) if(i) GameObject.Instantiate(i, target.transform, false);
+        if(generatesWorld != null) foreach(var i in generatesWorld) if(i) GameObject.Instantiate(i, this.transform.position, this.transform.rotation);
+        if(removeObjects != null) foreach(var i in removeObjects) if(i) GameObject.Destroy(i);
+        if(disableComponents != null) foreach(var i in disableComponents) if(i) i.enabled = false;
+        if(removeComponents != null) foreach(var i in removeComponents) if(i) Destroy(i);
     }
 }

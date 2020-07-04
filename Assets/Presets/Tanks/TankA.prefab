@@ -4336,6 +4336,8 @@ GameObject:
   - component: {fileID: 1024783112}
   - component: {fileID: 4825123593254900720}
   - component: {fileID: 7165965439192017532}
+  - component: {fileID: 7934736713296060656}
+  - component: {fileID: 566774313290542342}
   m_Layer: 17
   m_Name: TankA
   m_TagString: Untagged
@@ -4392,7 +4394,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: f4e02987e85f4504babd67b6b8d9f104, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  centerOfMass: {x: 0, y: 0.2, z: 0}
+  centerOfMass: {x: 0, y: -1, z: 0}
   leftTrack: {fileID: 4719578361731818261}
   rightTrack: {fileID: 4719578360882737985}
   idleAudio: {fileID: 8380086799061649096}
@@ -4430,11 +4432,11 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   factionId: 0
-  maxStrength: 1800
+  maxStrength: 1200
   invincible: 0
   threatReduceTime: 10
   aimOffset: {x: 0, y: 1.48, z: 0}
-  _currentStrength: 1800
+  _currentStrength: 1200
   threat: 0
 --- !u!114 &4825123593254900720
 MonoBehaviour:
@@ -4461,7 +4463,7 @@ MonoBehaviour:
   disableComponents:
   - {fileID: 4719578361238191850}
   - {fileID: 1024783111}
-  - {fileID: 4719578361271083748}
+  - {fileID: 0}
   - {fileID: 4719578361731818261}
   - {fileID: 4719578360882737985}
   - {fileID: 7577010086057240279}
@@ -4486,6 +4488,39 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   launchers:
+  - {fileID: 4718859826317748478}
+  - {fileID: 4718859825803448386}
+--- !u!114 &7934736713296060656
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 4719578361238191852}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: b46c70c679067e445b26f5a4541fc741, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  turret: {fileID: 4719578361271083750}
+  barrels:
+  - {fileID: 4719578360206155315}
+  - {fileID: 4718859826843925592}
+  angularSpeed: 45
+  _targetPos: {x: 0, y: 0, z: 0}
+--- !u!114 &566774313290542342
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 4719578361238191852}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 4c20c7000eddb8546b42236103a862ee, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  launches:
   - {fileID: 4718859826317748478}
   - {fileID: 4718859825803448386}
 --- !u!1 &4719578361254566130
@@ -4547,7 +4582,7 @@ MeshRenderer:
   m_RenderingLayerMask: 1
   m_RendererPriority: 0
   m_Materials:
-  - {fileID: 2100000, guid: beb8218f2abedf343aa0f4eebfe94eb8, type: 2}
+  - {fileID: 2100000, guid: 76b6ddf702b93584c871431791b71aa1, type: 2}
   m_StaticBatchInfo:
     firstSubMesh: 0
     subMeshCount: 0
@@ -4591,7 +4626,6 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 4716104438559999406}
-  - component: {fileID: 4719578361271083748}
   m_Layer: 17
   m_Name: Turret
   m_TagString: Untagged
@@ -4617,23 +4651,6 @@ Transform:
   m_Father: {fileID: 4716104438638638684}
   m_RootOrder: 1
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!114 &4719578361271083748
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 4719578361271083750}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: b46c70c679067e445b26f5a4541fc741, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  barrels:
-  - {fileID: 4719578360206155315}
-  - {fileID: 4718859826843925592}
-  angularSpeed: 45
-  _targetPos: {x: 0, y: 0, z: 0}
 --- !u!1 &4719578361327269224
 GameObject:
   m_ObjectHideFlags: 0

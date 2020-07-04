@@ -8,8 +8,23 @@ using Utils;
 /// 炮塔一般只做水平转动.
 /// 必须挂在炮塔上.
 /// </summary>
+[RequireComponent(typeof(UnitControl))]
 public class TurretControl : MonoBehaviour
 {
+    [Tooltip("炮台对象")]
+    public GameObject turret;
+    
+    [Tooltip("该炮台对应的炮管.")]
+    public BarrelControl[] barrels;
+    
+    [Tooltip("转速.")]
+    public float angularSpeed;
+    
+    [Header("状态参数")]
+    
+    [Tooltip("目标位置.")]
+    [ReadOnly] [SerializeField] Vector3 _targetPos;
+    
     /// <summary>
     /// 指定目标位置.
     /// </summary>
@@ -28,20 +43,9 @@ public class TurretControl : MonoBehaviour
     /// </summary>
     public Vector3 targetDir
     {
-        get => targetPos - transform.position;
-        set => targetPos = transform.position + value;
+        get => targetPos - turret.transform.position;
+        set => targetPos = turret.transform.position + value;
     }
-    
-    [Tooltip("该炮台对应的炮管.")]
-    public BarrelControl[] barrels;
-    
-    [Tooltip("转速.")]
-    public float angularSpeed;
-    
-    [Header("状态参数")]
-    
-    [Tooltip("目标位置.")]
-    [ReadOnly] [SerializeField] Vector3 _targetPos;
     
     /// <summary>
     /// 当前预估朝向.
@@ -59,7 +63,7 @@ public class TurretControl : MonoBehaviour
     
     void Start()
     {
-        Debug.Assert(transform.localRotation == Quaternion.identity);
+        Debug.Assert(turret.transform.localRotation == Quaternion.identity);
     }
     
     void Update()
@@ -73,14 +77,14 @@ public class TurretControl : MonoBehaviour
     void UpdateYaw()
     {
         // 目标到炮管旋转平面的投影的位置.
-        var targetLocal = transform.InverseTransformPoint(targetPos);
+        var targetLocal = turret.transform.InverseTransformPoint(targetPos);
         // 目标角.
         var deltaYaw = Mathf.Atan2(targetLocal.x, targetLocal.z).ToDeg();
         // 限制转速.
         var limitSpeed = angularSpeed * Time.deltaTime;
         deltaYaw = deltaYaw.Clamp(-limitSpeed, limitSpeed);
         // 旋转.
-        transform.Rotate(0, deltaYaw, 0);
+        turret.transform.Rotate(0, deltaYaw, 0);
     }
     
 }

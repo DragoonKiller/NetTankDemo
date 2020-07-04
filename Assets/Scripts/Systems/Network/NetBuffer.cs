@@ -106,12 +106,18 @@ namespace Systems
                     }
                     catch(SocketException e)
                     {
-                        if(e.ErrorCode == 10060)
+                        if(e.ErrorCode == 10060     // 超时
+                        || e.ErrorCode == 10053)    // 主动关闭连接
                         {
                             cancelCallback();
                             return;
                         }
+                        $"errcode {e.ErrorCode.ToString()}".Log();
                         throw e;
+                    }
+                    catch(ObjectDisposedException) // Socket 对象被释放了
+                    {
+                        return;
                     }
                 });
         
@@ -135,14 +141,15 @@ namespace Systems
                     }
                     catch(SocketException e)
                     {
-                        if(e.ErrorCode == 10060)
+                        if(e.ErrorCode == 10060     // 超时
+                        || e.ErrorCode == 10053)    // 主动关闭连接
                         {
                             cancelCallback();
                             return;
                         }
                         throw e;
                     }
-                    catch(ObjectDisposedException) // Socket 对象被释放了,  
+                    catch(ObjectDisposedException) // Socket 对象被释放了
                     {
                         return;
                     }

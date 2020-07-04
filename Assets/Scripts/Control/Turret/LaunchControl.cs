@@ -9,8 +9,9 @@ public partial class Signals
 {
     public struct Launch
     {
-        public CannonBallControl cannonballTemplate;
         public LaunchControl launcher;
+        public Vector2 biasVec;
+        public float biasDir;
     }
 }
 
@@ -207,10 +208,12 @@ public class LaunchControl : MonoBehaviour
     public void ForceFire(int factionId = -1)
     {
         if(!enabled) return;
-        Signal.Emit(new Signals.Launch(){
-            cannonballTemplate = cannonBallTemplate,
+        
+        Signal.Emit(new Signals.Launch() {
             launcher = this,
-            
+            biasVec = Vector2.right.Rot((0f, 360f).Random().ToRad()),
+            biasDir = (-Mathf.PI, Mathf.PI).Random() + heat * preheatBias, // 积聚热量会导致偏差增加.
+        
         });
     }
     
@@ -242,21 +245,21 @@ public class LaunchControl : MonoBehaviour
     
     public static void LaunchCallback(Signals.Launch e)
     {
-        var cannonBallTemplate = e.cannonballTemplate;
+        var cannonBallTemplate = e.launcher.cannonBallTemplate;
+        var unit = e.launcher.unit;
         var launcher = e.launcher;
-        var unit = launcher.unit;
-        
-        var g = GameObject.Instantiate(cannonBallTemplate.gameObject, launcher.transform.position, launcher.transform.rotation);
         
         // 开火会把威胁值设置成 1.
         unit.threat = unit.threat.Max(1);
         
+        // 创建炮弹.
+        var g = GameObject.Instantiate(cannonBallTemplate.gameObject, launcher.transform.position, launcher.transform.rotation);
+        
         var x = g.GetComponent<CannonBallControl>();
         x.owner = unit;
+        
         // 炮口自身的移动速度会叠加到炮弹上.
         x.appendVelocity = launcher.additionalVelocity;
-        // 积聚热量会导致偏差增加.
-        x.bias += launcher.heat * launcher.preheatBias;
         
         if(launcher.launchFx != null) GameObject.Instantiate(launcher.launchFx, launcher.transform.position, launcher.transform.rotation);
         
@@ -266,6 +269,7 @@ public class LaunchControl : MonoBehaviour
         
         // 每次开火会增加热量.
         launcher.heat = (launcher.heat + 1.0f / launcher.preheatTime).Min(1);
+        
         // 热量不足会导致冷却变长.
         launcher.cooldownProcess = launcher.totalCooldown;
     }
